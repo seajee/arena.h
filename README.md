@@ -1,7 +1,7 @@
 # arena.h
 
 A single header library that implements
-[https://en.wikipedia.org/wiki/Region-based_memory_management](region-based memory management) in C.
+[region-based memory management](https://en.wikipedia.org/wiki/Region-based_memory_management) in C.
 
 ## Example
 
