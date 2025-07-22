@@ -38,7 +38,7 @@ void *arena_alloc(Arena *a, size_t bytes)
         return NULL;
     }
 
-    // Empty a
+    // Empty arena
     if (a->head == NULL) {
         size_t size = (bytes > ARENA_MIN_CAPACITY ? bytes : ARENA_MIN_CAPACITY);
         a->head = malloc(sizeof(*a->head) + size);
