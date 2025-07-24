@@ -12,10 +12,11 @@ in C using a linked list approach.
 
 int main(void)
 {
-    Arena a = {0}; // or arena_create(...) to specify the region capacity
+    Arena a = {0}; // or arena_create(...) to specify a custom region
+                   // capacity just for this arena
 
-    int *x = arena_alloc(&a, sizeof(*x) * 69);
-    float *y = arena_alloc(&a, sizeof(*y) * 420);
+    int *x = arena_alloc(&a, sizeof(*x) * 32);
+    float *y = arena_alloc(&a, sizeof(*y) * 512);
 
     arena_free(&a);
     return 0;
