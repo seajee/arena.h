@@ -32,7 +32,7 @@ struct Arena_Region {
     uint8_t data[];
 };
 
-typedef struct {
+typedef struct Arena {
     Arena_Region *head;
     Arena_Region *tail;
     size_t region_capacity;
