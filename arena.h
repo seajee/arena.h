@@ -73,7 +73,6 @@ int main(void)
     arena_free(&a);
     return 0;
 }
-
 */
 
 #ifndef ARENA_H_
