@@ -84,23 +84,19 @@ void *arena_alloc(Arena *a, size_t bytes)
             a->tail = a->tail->next;
         }
 
-        // If found allocate on that region
-        if (bytes <= a->tail->capacity - a->tail->count) {
-            a->tail->count += bytes;
-            return a->tail->data + a->tail->count;
+        // If not found create a new region
+        if (bytes > a->tail->capacity - a->tail->count) {
+            size_t size = (bytes > region_capacity ? bytes : region_capacity);
+            a->tail->next = (Arena_Region*)ARENA_REALLOC(NULL, sizeof(*a->tail) + size);
+            ARENA_ASSERT(a->head != NULL);
+            if (a->tail->next == NULL) {
+                return NULL;
+            }
+            a->tail = a->tail->next;
+            a->tail->count = bytes;
+            a->tail->capacity = size;
+            return a->tail->data;
         }
-
-        // If not create a new region
-        size_t size = (bytes > region_capacity ? bytes : region_capacity);
-        a->tail->next = (Arena_Region*)ARENA_REALLOC(NULL, sizeof(*a->tail) + size);
-        ARENA_ASSERT(a->head != NULL);
-        if (a->tail->next == NULL) {
-            return NULL;
-        }
-        a->tail = a->tail->next;
-        a->tail->count = bytes;
-        a->tail->capacity = size;
-        return a->tail->data;
     }
 
     a->tail->count += bytes;
