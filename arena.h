@@ -41,7 +41,7 @@ void *arena_alloc(Arena *a, size_t bytes)
     // Empty arena
     if (a->head == NULL) {
         size_t size = (bytes > ARENA_MIN_CAPACITY ? bytes : ARENA_MIN_CAPACITY);
-        a->head = malloc(sizeof(*a->head) + size);
+        a->head = (Arena_Region*)malloc(sizeof(*a->head) + size);
         if (a->head == NULL) {
             return NULL;
         }
@@ -66,7 +66,7 @@ void *arena_alloc(Arena *a, size_t bytes)
         }
 
         // If not create a new region
-        a->tail->next = malloc(sizeof(*a->tail) + bytes);
+        a->tail->next = (Arena_Region*)malloc(sizeof(*a->tail) + bytes);
         if (a->tail->next == NULL) {
             return NULL;
         }
