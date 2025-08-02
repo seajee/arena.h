@@ -1,4 +1,4 @@
-// arena.h - v1.0.0 - MIT License - https://github.com/seajee/arena.h
+// arena.h - v1.0.1 - MIT License - https://github.com/seajee/arena.h
 // single header library for region-based memory management.
 //
 // License and changelog:
@@ -8,7 +8,7 @@
 // Compile-time options:
 //
 //     Note: every compile-time option listed here should be configured before
-//     the definition of the ARENA_IMPLEMENTATION macro.
+//           the #include "arena.h"
 //
 //     #define ARENA_REGION_CAPACITY new_region_capacity_in_bytes (4096)
 //
@@ -48,7 +48,9 @@
 //     void arena_free(Arena *a)
 //
 // This function frees all of the regions allocated in the specified arena
-// which invalidates all the pointers associated with the arena.
+// which invalidates all the pointers associated with the arena. The arena can
+// still be reused. If the arena was created with arena_create() the
+// configured region_capacity will be retained.
 //
 //     void arena_reset(Arena *a)
 //
@@ -70,7 +72,7 @@ int main(void)
     int *x = arena_alloc(&a, sizeof(*x) * 32);
     float *y = arena_alloc(&a, sizeof(*y) * 512);
 
-    arena_free(&a);
+    arena_free(&a); // The arena can still be reused
     return 0;
 }
 */
@@ -100,6 +102,10 @@ int main(void)
 #    define ARENA_FREE free
 #endif // ARENA_FREE
 
+#ifdef __cplusplus
+extern "C" { // Prevent name mangling of functions
+#endif // __cplusplus
+
 typedef struct Arena_Region Arena_Region;
 
 struct Arena_Region {
@@ -120,9 +126,17 @@ void *arena_alloc(Arena *a, size_t bytes);
 void arena_free(Arena *a);
 void arena_reset(Arena *a);
 
+#ifdef __cplusplus
+}
+#endif // __cplusplus
+
 #endif // ARENA_H_
 
 #ifdef ARENA_IMPLEMENTATION
+
+#ifdef __cplusplus
+extern "C" { // Prevent name mangling of functions
+#endif // __cplusplus
 
 Arena arena_create(size_t region_capacity)
 {
@@ -195,7 +209,7 @@ void arena_free(Arena *a)
 
     a->head = NULL;
     a->tail = NULL;
-    a->region_capacity = 0;
+    // a->region_capacity = 0;
 }
 
 void arena_reset(Arena *a)
@@ -211,11 +225,17 @@ void arena_reset(Arena *a)
     a->tail = a->head;
 }
 
+#ifdef __cplusplus
+}
+#endif // __cplusplus
+
 #endif // ARENA_IMPLEMENTATION
 
 /*
  * Revision history:
  *
+ *     1.0.1 (2025-08-02) Prevent name mangling of functions; don't reset
+ *                        region_capacity in arena_free()
  *     1.0.0 (2025-07-24) Initial release
  */
 

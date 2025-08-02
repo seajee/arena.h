@@ -18,7 +18,7 @@ int main(void)
     int *x = arena_alloc(&a, sizeof(*x) * 32);
     float *y = arena_alloc(&a, sizeof(*y) * 512);
 
-    arena_free(&a);
+    arena_free(&a); // The arena can still be reused
     return 0;
 }
 ```
